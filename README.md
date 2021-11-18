@@ -1,3 +1,5 @@
-# web-platform-idkten
+# Simple video slider
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/web-platform-idkten)
+---
+
+Just a Vanilla video slider for reference.
