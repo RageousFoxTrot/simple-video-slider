@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="script.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <style>
+      .container,
+      .container * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      video {
+        width: 100%;
+        height: auto;
+        position: absolute;
+        object-fit: cover;
+        transition: all 150ms linear;
+        z-index: 10;
+        aspect-ratio: 2;
+      }
+
+      .box1,
+      .box2,
+      .box3,
+      .box4 {
+        opacity: 0;
+      }
+
+      .box1 {
+        opacity: 1;
+      }
+      .container {
+        width: 100%;
+        max-height: 75vh;
+        margin: auto;
+        aspect-ratio: 2;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: relative;
+      }
+
+      .next,
+      .prev {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        padding: 16px;
+        margin-top: -50px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+        -webkit-user-select: none;
+        z-index: 1000;
+      }
+
+      .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+      }
+
+      .prev:hover,
+      .next:hover {
+        background-color: #000000aa;
+      }
+
+      @media screen and (min-width: 900px) {
+        .container {
+          max-height: 50vh;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <video
+        src="https://miragevirtualreality.com/wp-content/uploads/2021/11/Spring-3.mp4"
+        id="box1"
+        class="box1"
+        autoplay=""
+        style="opacity: 1"
+      ></video>
+      <video
+        src="https://miragevirtualreality.com/wp-content/uploads/2021/11/Summer-2.mp4"
+        id="box2"
+        class="box2"
+      ></video>
+      <video
+        src="https://miragevirtualreality.com/wp-content/uploads/2021/11/Autumn-1.mp4"
+        id="box3"
+        class="box3"
+      ></video>
+      <video
+        src="https://miragevirtualreality.com/wp-content/uploads/2021/11/Winter-1.mp4"
+        id="box4"
+        class="box4"
+      ></video>
+
+      <a class="prev">&#10094;</a>
+      <a class="next">&#10095;</a>
+    </div>
+
+    <script type="application/javascript">
+      const $ = (elem) => document.querySelectorAll(elem);
+
+      const boxes = [...$('[id^="box"]')].sort(
+        (x, y) =>
+          Number.parseInt(x.id.substr(4), 10) -
+          Number.parseInt(y.id.substr(4), 10)
+      );
+      const container = $('.container')[0];
+      const prevBtn = $('.prev')[0];
+      const nextBtn = $('.next')[0];
+
+      const currentVideo = () => boxes.find(({ style }) => style.opacity == 1);
+
+      container.addEventListener('click', (ev) => {
+        const video = currentVideo();
+        video.paused ? video.play() : video.pause();
+      });
+
+      prevBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const video = currentVideo();
+        const index = boxes.indexOf(video);
+
+        if (!video.paused) video.pause();
+        video.currentTime = 0;
+        video.style.opacity = 0;
+        boxes[(index == 0 ? boxes.length : index) - 1].style.opacity = 1;
+        boxes[(index == 0 ? boxes.length : index) - 1].play();
+      });
+
+      nextBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const video = currentVideo();
+        const index = boxes.indexOf(video);
+
+        if (!video.paused) video.pause();
+        video.currentTime = 0;
+        video.style.opacity = 0;
+        boxes[(index == boxes.length - 1 ? -1 : index) + 1].style.opacity = 1;
+        boxes[(index == boxes.length - 1 ? -1 : index) + 1].play();
+      });
+
+      boxes.forEach((x, i) => {
+        _ = i === 3 ? 0 : i + 1;
+
+        x.addEventListener('ended', (ev) => {
+          // Activates autoplay.
+          /*
+          boxes[i !== 3 ? i + 1 : 0].play();
+          x.style.opacity = 0;
+          boxes[i !== 3 ? i + 1 : 0].style.opacity = 1;
+          */
+
+          // Activates loop.
+          x.play();
+
+          // WARNING: Don't use autoplay and loop simultaneously. For obvious reasons.
+        });
+      });
+    </script>
+  </body>
+</html>
